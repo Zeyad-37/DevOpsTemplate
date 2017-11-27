@@ -17,6 +17,17 @@
 #}
 
 -ignorewarnings
+-dontobfuscate
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-verbose
+-optimizations !code/simplification/arithmetic,!field
+
+-keepclassmembers class * {
+    native <methods>;
+}
 
 # Remove logs
 -assumenosideeffects class android.util.Log {
