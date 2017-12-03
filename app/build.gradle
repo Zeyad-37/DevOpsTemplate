@@ -19,13 +19,13 @@ apply from: "$project.rootDir/tools/script-infer.gradle"
 apply from: "$project.rootDir/tools/script-detekt.gradle"
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 26
     buildToolsVersion "26.0.2"
 
     defaultConfig {
         applicationId appId
         minSdkVersion 18
-        targetSdkVersion 27
+        targetSdkVersion 26
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -131,12 +131,34 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation("com.android.support:design:$supportLibrary")
 
-    implementation "nl.littlerobots.rxlint:rxlint:$rxlint"
+    implementation "com.android.support:design:$supportLibrary"
+    implementation "com.android.support:appcompat-v7:$supportLibrary"
+    implementation "com.android.support:support-v4:$supportLibrary"
+    implementation "com.android.support:recyclerview-v7:$supportLibrary"
+    implementation "com.android.support:design:$supportLibrary"
+    implementation "com.android.support:cardview-v7:$supportLibrary"
+    implementation "com.android.support:palette-v7:$supportLibrary"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
+    //    def withoutRx = { exclude group: "io.reactivex.rxjava2" }
+    implementation "com.jakewharton.rxbinding2:rxbinding:$rxbinding"//, withoutRx
+    implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding"
+    implementation "com.jakewharton.rxbinding2:rxbinding-design:$rxbinding"
+    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxbinding"
+
+    implementation "com.github.Zeyad-37:RxRedux:$rxredux"
+    implementation "com.github.Zeyad-37:GenericRecyclerViewAdapter:$genericRecyclerViewAdapter"
 //    implementation 'com.github.pwittchen:reactivenetwork-rx2:0.12.2'
+    implementation "com.github.bumptech.glide:glide:$glide"
+    implementation "com.airbnb.android:lottie:$lottie"
+
+    implementation "nl.littlerobots.rxlint:rxlint:$rxlint"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
 
     // Testing
     testImplementation "junit:junit:$junit"

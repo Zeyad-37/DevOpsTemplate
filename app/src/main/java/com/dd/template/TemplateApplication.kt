@@ -2,10 +2,12 @@ package com.dd.template
 
 import android.app.Application
 import android.os.StrictMode
+import com.squareup.leakcanary.LeakCanary
+import com.squareup.leakcanary.RefWatcher
 
 
 class TemplateApplication : Application() {
-
+    private lateinit var refWatcher: RefWatcher
     override fun onCreate() {
         super.onCreate()
 
@@ -20,6 +22,8 @@ class TemplateApplication : Application() {
                     .build())
         }
 
+        refWatcher = LeakCanary.install(this)
+
 //        ReactiveNetwork.observeNetworkConnectivity(this)
 //                .subscribeOn(Schedulers.io())
 //                .filter(ConnectivityPredicate.hasState(NetworkInfo.State.CONNECTED))
@@ -30,5 +34,9 @@ class TemplateApplication : Application() {
 //                        // do something
 //                    }
 //                })
+    }
+
+    fun getRefWatcher(): RefWatcher {
+        return refWatcher
     }
 }
