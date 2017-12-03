@@ -1,0 +1,23 @@
+apply plugin: 'org.sonarqube'
+
+sonarqube {
+    properties {
+        // required metadata
+        property "sonar.projectKey", "android"
+        property "sonar.projectName", "Android Development"
+        property "sonar.projectVersion", "${version}"
+
+        // path to source directories (required)
+        property "sonar.sources", "src"
+
+        // other configs
+        property "sonar.java.source", "7"
+
+        // Android Lint
+        property "sonar.android.lint.report", "build/outputs/sonar-lint-results.xml"
+
+        // Github plugin
+        property "sonar.github.oauth", "<oauth-code-for-user-who-will-comment>"
+        property "sonar.github.repository", "<org>/<repo>"
+    }
+}

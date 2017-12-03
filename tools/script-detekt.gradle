@@ -1,0 +1,10 @@
+apply plugin: "io.gitlab.arturbosch.detekt"
+
+detekt {
+    version = "1.0.0.RC5.5"
+    profile("main") {
+        input = "$projectDir/your/app"
+        config = "$projectDir/detekt.yml"
+        filters = ".*test.*,.*/resources/.*,.*/tmp/.*"
+    }
+}

@@ -4,7 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'jacoco-android'
 apply plugin: 'com.uber.infer.android'
-//apply plugin: 'pl.droidsonroids.pitest'
+apply plugin: "org.jmailen.kotlinter"
+apply plugin: "net.ltgt.errorprone"
 
 //apply from: "$project.rootDir/tools/script-git-version.gradle"
 apply from: "$project.rootDir/tools/script-check-style.gradle"
@@ -15,13 +16,14 @@ apply from: "$project.rootDir/tools/script-java-code-coverage.gradle"
 apply from: "$project.rootDir/tools/script-java-doc.gradle"
 apply from: "$project.rootDir/tools/script-pitest.gradle"
 apply from: "$project.rootDir/tools/script-infer.gradle"
+apply from: "$project.rootDir/tools/script-detekt.gradle"
 
 android {
     compileSdkVersion 27
     buildToolsVersion "26.0.2"
 
     defaultConfig {
-        applicationId "com.dd.template"
+        applicationId appId
         minSdkVersion 18
         targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -41,7 +43,9 @@ android {
             storeFile file('../keystore/release.keystore')
         }
     }
+
     flavorDimensions "dev", "prod"
+
     productFlavors {
         dev {
             signingConfig signingConfigs.debug
@@ -70,8 +74,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), "$project.rootDir/tools/rules-proguard.pro"
             signingConfig signingConfigs.release
         }
+
         debug {
             minifyEnabled true
+            testCoverageEnabled = true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), "$project.rootDir/tools/rules-proguard-debug.pro"
             signingConfig signingConfigs.debug
         }
@@ -83,6 +89,7 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
+        unitTests.includeAndroidResources = true
     }
 
     packagingOptions {
@@ -104,6 +111,21 @@ android {
         html.enabled true
         xml.enabled false
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+//    configurations.all{
+//        resolutionStrategy {
+//            eachDependency { DependencyResolveDetails details ->
+//                if (details.required.group == 'com.android.support') {
+//                    details.useVersion(supportLibrary)
+//                }
+//            }
+//        }
+//    }
 }
 
 dependencies {
@@ -111,14 +133,18 @@ dependencies {
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation("com.android.support:design:$supportLibrary")
 
-    implementation 'nl.littlerobots.rxlint:rxlint:1.4'
+    implementation "nl.littlerobots.rxlint:rxlint:$rxlint"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
+//    implementation 'com.github.pwittchen:reactivenetwork-rx2:0.12.2'
 
     // Testing
-    testImplementation 'junit:junit:4.12'
+    testImplementation "junit:junit:$junit"
     testImplementation "com.android.support:support-annotations:$supportLibrary"
-    testImplementation "org.mockito:mockito-core:1.10.19"
+    testImplementation "org.mockito:mockito-core:$mockito"
+    testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlin"
     testImplementation "org.robolectric:robolectric:$robolectric"
-    testImplementation "org.robolectric:shadows-support-v4:$robolectric"
+    testImplementation "org.robolectric:shadows-support-v4:3.3.2"
 
     testImplementation "org.powermock:powermock-module-junit4:$powerMock"
     testImplementation "org.powermock:powermock-module-junit4-rule:$powerMock"
@@ -126,28 +152,24 @@ dependencies {
     testImplementation "org.powermock:powermock-classloading-xstream:$powerMock"
 
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttpVersion"
-    testImplementation 'com.github.andrzejchm.RESTMock:android:0.2.2'
-    //required to resolve robolectric test problems
+    testImplementation "com.github.andrzejchm.RESTMock:android:$restMock"
+
     testImplementation("com.jakewharton.espresso:okhttp3-idling-resource:$okhttpIdelingResource") {
-        exclude group: 'com.android.support'
+        exclude group: 'com.android.support' //required to resolve robolectric test problems
     }
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation "com.android.support.test:runner:$androidSupportTest"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoCore"
 
-    androidTestCompile "com.android.support.test:runner:$androidSupportTest"
-    androidTestCompile "com.android.support.test:rules:$androidSupportTest"
-    androidTestCompile "com.android.support:support-annotations:$supportLibrary"
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$espressoCore"
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    androidTestCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
-    androidTestCompile('com.jakewharton.espresso:okhttp3-idling-resource:1.0.0') {
+    androidTestImplementation "com.android.support.test:runner:$androidSupportTest"
+    androidTestImplementation "com.android.support.test:rules:$androidSupportTest"
+    androidTestImplementation "com.android.support:support-annotations:$supportLibrary"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoCore"
+    androidTestImplementation "junit:junit:$junit"
+    androidTestImplementation "org.mockito:mockito-core:$mockito"
+    androidTestImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlin"
+    androidTestImplementation("com.jakewharton.espresso:okhttp3-idling-resource:$okhttpIdelingResource") {
         exclude group: 'com.android.support'
     }
-    androidTestCompile 'com.squareup.okhttp3:mockwebserver:3.8.0'
-    androidTestCompile 'com.github.andrzejchm.RESTMock:android:0.1.4'
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okhttpVersion"
+    androidTestImplementation "com.github.andrzejchm.RESTMock:android:$restMock"
 }
-
-apply plugin: "net.ltgt.errorprone"
