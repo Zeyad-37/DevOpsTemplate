@@ -17,6 +17,7 @@ apply from: "$project.rootDir/tools/script-java-doc.gradle"
 apply from: "$project.rootDir/tools/script-pitest.gradle"
 apply from: "$project.rootDir/tools/script-infer.gradle"
 apply from: "$project.rootDir/tools/script-detekt.gradle"
+apply from: "$project.rootDir/tools/script-dokka.gradle"
 
 android {
     compileSdkVersion 26
@@ -167,6 +168,8 @@ dependencies {
     testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlin"
     testImplementation "org.robolectric:robolectric:$robolectric"
     testImplementation "org.robolectric:shadows-support-v4:3.3.2"
+
+    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
 
     testImplementation "org.powermock:powermock-module-junit4:$powerMock"
     testImplementation "org.powermock:powermock-module-junit4-rule:$powerMock"

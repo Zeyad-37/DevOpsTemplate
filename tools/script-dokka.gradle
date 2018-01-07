@@ -1,0 +1,12 @@
+apply plugin: 'org.jetbrains.dokka'
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+
+    linkMapping {
+        dir = "src/main/kotlin"
+        url = "https://github.com/nhaarman/mockito-kotlin/tree/master/mockito-kotlin/src/main/kotlin"
+        suffix = "#L"
+    }
+}
