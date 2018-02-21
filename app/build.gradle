@@ -20,13 +20,13 @@ apply from: "$project.rootDir/tools/script-detekt.gradle"
 apply from: "$project.rootDir/tools/script-dokka.gradle"
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion Versions.compile_sdk
+    buildToolsVersion Versions.buildTool
 
     defaultConfig {
-        applicationId appId
-        minSdkVersion 18
-        targetSdkVersion 26
+        applicationId Versions.appId
+        minSdkVersion Versions.min_sdk
+        targetSdkVersion Versions.target_sdk
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -131,70 +131,65 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation Deps.kotlin
 
-    implementation "com.android.support:design:$supportLibrary"
-    implementation "com.android.support:appcompat-v7:$supportLibrary"
-    implementation "com.android.support:support-v4:$supportLibrary"
-    implementation "com.android.support:recyclerview-v7:$supportLibrary"
-    implementation "com.android.support:design:$supportLibrary"
-    implementation "com.android.support:cardview-v7:$supportLibrary"
-    implementation "com.android.support:palette-v7:$supportLibrary"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation Deps.design_support
+    implementation Deps.appcompat_v7
+    implementation Deps.support_v4
+    implementation Deps.recycler_view
+    implementation Deps.card_view
+    implementation Deps.palette
+    implementation Deps.constraint_layout
 
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
+    implementation Deps.rx_android
+    implementation Deps.rx_java
     //    def withoutRx = { exclude group: "io.reactivex.rxjava2" }
-    implementation "com.jakewharton.rxbinding2:rxbinding:$rxbinding"//, withoutRx
-    implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding"
-    implementation "com.jakewharton.rxbinding2:rxbinding-design:$rxbinding"
-    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxbinding"
+    implementation Deps.rx_binding_core
+    implementation Deps.rx_binding_app_compat
+    implementation Deps.rx_binding_design
+    implementation Deps.rx_binding_recycler_view
 
-    implementation "com.github.Zeyad-37:RxRedux:$rxredux"
-    implementation "com.github.Zeyad-37:GenericRecyclerViewAdapter:$genericRecyclerViewAdapter"
+    implementation Deps.rx_redux
+    implementation "com.github.Zeyad-37:GenericRecyclerViewAdapter:1.8.0"
 //    implementation 'com.github.pwittchen:reactivenetwork-rx2:0.12.2'
-    implementation "com.github.bumptech.glide:glide:$glide"
-    implementation "com.airbnb.android:lottie:$lottie"
+    implementation Deps.glide
+    implementation Deps.lottie
 
-    implementation "nl.littlerobots.rxlint:rxlint:$rxlint"
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
-    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
+    implementation Deps.rxlint
+    debugImplementation Deps.leakCanary
+    releaseImplementation Deps.leakCanary_no_op
+    testImplementation Deps.leakCanary_no_op
 
     // Testing
-    testImplementation "junit:junit:$junit"
-    testImplementation "com.android.support:support-annotations:$supportLibrary"
-    testImplementation "org.mockito:mockito-core:$mockito"
-    testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlin"
-    testImplementation "org.robolectric:robolectric:$robolectric"
-    testImplementation "org.robolectric:shadows-support-v4:3.3.2"
+    testImplementation Deps.junit
+    testImplementation Deps.support_annotation
+    testImplementation Deps.mockito
+    testImplementation Deps.mockito_kotlin
+    testImplementation Deps.robolectric
+    testImplementation Deps.robolectric_shadow_support_v4
 
-    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
+    testImplementation Deps.power_mock_junit
+    testImplementation Deps.power_mock_junit_rule
+    testImplementation Deps.power_mock_mockito
+    testImplementation Deps.power_mock_class_loading_xstream
 
-    testImplementation "org.powermock:powermock-module-junit4:$powerMock"
-    testImplementation "org.powermock:powermock-module-junit4-rule:$powerMock"
-    testImplementation "org.powermock:powermock-api-mockito:$powerMock"
-    testImplementation "org.powermock:powermock-classloading-xstream:$powerMock"
+    testImplementation Deps.mock_web_server
+    testImplementation Deps.rest_mock
 
-    testImplementation "com.squareup.okhttp3:mockwebserver:$okhttpVersion"
-    testImplementation "com.github.andrzejchm.RESTMock:android:$restMock"
-
-    testImplementation("com.jakewharton.espresso:okhttp3-idling-resource:$okhttpIdelingResource") {
+    testImplementation(Deps.okHttp_ideling_resource) {
         exclude group: 'com.android.support' //required to resolve robolectric test problems
     }
-    androidTestImplementation "com.android.support.test:runner:$androidSupportTest"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoCore"
 
-    androidTestImplementation "com.android.support.test:runner:$androidSupportTest"
-    androidTestImplementation "com.android.support.test:rules:$androidSupportTest"
-    androidTestImplementation "com.android.support:support-annotations:$supportLibrary"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoCore"
-    androidTestImplementation "junit:junit:$junit"
-    androidTestImplementation "org.mockito:mockito-core:$mockito"
-    androidTestImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlin"
-    androidTestImplementation("com.jakewharton.espresso:okhttp3-idling-resource:$okhttpIdelingResource") {
+    androidTestImplementation Deps.esspresso_core
+    androidTestImplementation Deps.support_test_runner
+    androidTestImplementation Deps.support_test_rules
+    androidTestImplementation Deps.support_annotation
+    androidTestImplementation Deps.junit
+    androidTestImplementation Deps.mockito
+    androidTestImplementation Deps.mockito_kotlin
+    androidTestImplementation(Deps.okHttp_ideling_resource) {
         exclude group: 'com.android.support'
     }
-    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okhttpVersion"
-    androidTestImplementation "com.github.andrzejchm.RESTMock:android:$restMock"
+    androidTestImplementation Deps.mock_web_server
+    androidTestImplementation Deps.rest_mock
 }

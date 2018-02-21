@@ -3,7 +3,7 @@
 apply plugin: 'pl.droidsonroids.pitest'
 
 pitest {
-    targetClasses = [appId + '.*']  /* specify target classes to be mutated */
+    targetClasses = [Versions.appId + '.*']  /* specify target classes to be mutated */
     excludedClasses = ['**Factory*'] /* Exclude Dagger generated classes */
     pitestVersion = "1.1.0"
     threads = 4 /* specify number of threads */
