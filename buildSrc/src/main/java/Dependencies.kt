@@ -7,6 +7,7 @@ object Versions {
 
     // Kotlin
     val kotlin = "1.2.21"
+    val ktx = "0.2"
 
     // SDK
     val min_sdk = 21
@@ -75,6 +76,7 @@ object Deps {
     val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
     val kotlin_gradle_plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
     val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jre7:${Versions.kotlin}"
+    val ktx = "androidx.core:core-ktx:${Versions.ktx}"
 
     // Libs
     // - Support
