@@ -86,6 +86,8 @@ object Deps {
     val palette = "com.android.support:palette-v7:${Versions.support_lib}"
     val constraint_layout = "com.android.support.constraint:constraint-layout:${Versions
             .contraint_layout}"
+    val arch_life_cycle = "android.arch.lifecycle:extensions:${Versions.archComp}"
+    val arch_reactive_stream = "android.arch.lifecycle:reactivestreams:${Versions.archComp}"
 
     // - Network
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
