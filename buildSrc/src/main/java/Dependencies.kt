@@ -6,7 +6,7 @@ object Versions {
     val android_gradle_plugin = "3.0.1"
 
     // Kotlin
-    val kotlin = "1.2.21"
+    val kotlin = "1.2.3"
     val ktx = "0.2"
 
     // SDK
