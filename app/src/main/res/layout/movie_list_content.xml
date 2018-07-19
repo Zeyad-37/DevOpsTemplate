@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/four_dp"
+    android:elevation="@dimen/four_dp"
+    app:cardCornerRadius="@dimen/eight_dp">
+
+    <LinearLayout
+        android:id="@+id/rl_row_movie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/four_dp"
+        android:paddingTop="@dimen/four_dp"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/two_hundred_dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/string_content_description"
+            android:transitionName="@string/transition_photo" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/four_dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textSize="@dimen/font_larger"
+            android:transitionName="@string/transition_text"
+            tools:text="{movie name}" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>

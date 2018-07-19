@@ -3,4 +3,11 @@
     <string name="main_app_version">Application version: %s</string>
     <string name="main_app_version_code">Application version code: %d</string>
     <string name="main_exit">Exit</string>
+    <string name="title_movie_list">Movies</string>
+    <string name="title_movie_detail">Movie Detail</string>
+    <string name="search_list">Search Movies</string>
+
+    <string name="transition_text">Text Transition</string>
+    <string name="transition_photo">Photo Transition</string>
+    <string name="string_content_description">Non accessible view</string>
 </resources>

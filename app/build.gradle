@@ -90,6 +90,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
@@ -105,6 +109,9 @@ dependencies {
     implementation Deps.palette
     implementation Deps.constraint_layout
 
+    implementation Deps.arch_life_cycle
+    implementation Deps.arch_reactive_stream
+
     implementation Deps.rx_android
     implementation Deps.rx_java
 
@@ -119,6 +126,7 @@ dependencies {
     implementation Deps.lottie
 
     implementation Deps.rxlint
+    implementation 'com.andrognito.flashbar:flashbar:1.0.2'
     debugImplementation Deps.leakCanary
     releaseImplementation Deps.leakCanary_no_op
     testImplementation Deps.leakCanary_no_op

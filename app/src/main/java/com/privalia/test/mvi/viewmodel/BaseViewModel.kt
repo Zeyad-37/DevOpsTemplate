@@ -4,13 +4,13 @@ import android.arch.lifecycle.ViewModel
 import android.os.Parcelable
 import android.support.v4.util.Pair
 import com.privalia.test.mvi.BaseEvent
-import com.privalia.test.mvi.viewmodel.Result.Companion.loadingResult
-import com.privalia.test.mvi.viewmodel.Result.Companion.successResult
 import com.privalia.test.mvi.UIModel
 import com.privalia.test.mvi.UIModel.Companion.IDLE
 import com.privalia.test.mvi.UIModel.Companion.errorState
 import com.privalia.test.mvi.UIModel.Companion.loadingState
 import com.privalia.test.mvi.UIModel.Companion.successState
+import com.privalia.test.mvi.viewmodel.Result.Companion.loadingResult
+import com.privalia.test.mvi.viewmodel.Result.Companion.successResult
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableTransformer
@@ -67,11 +67,12 @@ abstract class BaseViewModel<S : Parcelable>(private val eventsSubject: PublishS
     private fun reducer(): BiFunction<UIModel<S>, Result<*>, UIModel<S>> =
             BiFunction { currentUIModel, result ->
                 when {
-                    result.isLoading -> loadingState(Pair(result.getEvent()!!, currentUIModel.getBundle()))
-                    result.isSuccessful -> successState(Pair(result.getEvent()!!,
-                            stateReducer().reduce(result.getBundle(), result.getEvent(),
+                    result.isLoading -> loadingState(Pair(result.getEvent(),
+                            currentUIModel.getBundle()))
+                    result.isSuccessful -> successState(Pair(result.getEvent(),
+                            stateReducer().reduce(result.getBundle()!!, result.getEvent(),
                                     currentUIModel.getBundle())))
-                    else -> errorState(result.throwable, Pair(result.getEvent()!!,
+                    else -> errorState(result.throwable, Pair(result.getEvent(),
                             currentUIModel.getBundle()))
                 }
             }

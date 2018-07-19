@@ -12,8 +12,8 @@ open class Result<B>(val throwable: Throwable?, val eventBundlePair: Pair<String
         return eventBundlePair.second!!
     }
 
-    fun getEvent(): String? {
-        return eventBundlePair.first
+    fun getEvent(): String {
+        return eventBundlePair.first!!
     }
 
     companion object {

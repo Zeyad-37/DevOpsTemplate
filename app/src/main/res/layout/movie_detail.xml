@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/repo_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    android:padding="@dimen/eight_dp"
+    android:textIsSelectable="true"
+    tools:context=".screens.movies.detail.MovieDetailActivity">
+
+    <include
+        android:id="@+id/loadLayout"
+        layout="@layout/view_loader_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/four_dp"
+        android:padding="@dimen/eight_dp"
+        app:cardCornerRadius="@dimen/eight_dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/eight_dp">
+
+            <TextView
+                android:id="@+id/tv_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/sixteen_dp"
+                android:drawablePadding="@dimen/four_dp"
+                android:textAppearance="?android:textAppearanceMedium"
+
+                tools:text="Rating" />
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/eight_dp"
+                android:layout_marginStart="@dimen/eight_dp"
+                android:layout_marginTop="@dimen/sixteen_dp"
+                android:layout_toEndOf="@id/tv_rating"
+                android:textAppearance="?android:textAppearanceMedium"
+
+                tools:text="Address" />
+
+            <TextView
+                android:id="@+id/tv_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_address"
+                android:layout_marginBottom="@dimen/sixteen_dp"
+                android:layout_marginTop="@dimen/sixteen_dp"
+                android:textAppearance="?android:textAppearanceMedium"
+
+                tools:text="3033502" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>
