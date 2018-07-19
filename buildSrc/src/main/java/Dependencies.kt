@@ -6,13 +6,15 @@ object Versions {
     val android_gradle_plugin = "3.0.1"
 
     // Kotlin
-    val kotlin = "1.2.21"
+    val kotlin = "1.2.51"
+
+    // Realm
+    val realm = "4.2.0"
 
     // SDK
     val min_sdk = 21
     val target_sdk = 27
     val compile_sdk = 27
-    val buildTool = "27.0.1"
 
     // App Version
     val version_code = 1
@@ -20,20 +22,20 @@ object Versions {
 
     // Libs
     // - Support
-    val support_lib = "27.0.2"
-    val contraint_layout = "1.0.2"
+    val support_lib = "27.1.1"
+    val contraint_layout = "1.1.2"
     val archComp = "1.0.0"
 
     // - Network
     val retrofit = "2.3.0"
-    val glide = "4.0.0"
+    val glide = "3.8.0"
     val okhttpVersion = "3.9.1"
 
     // - Reactive
     val rxjava = "2.1.9"
     val rxAndroid = "2.0.1"
     val rxbinding = "2.1.1"
-    val rxredux = "2.0.0"
+    val rxredux = "2.1.2"
 
     // - Injection
     val koin_version = "0.8.2"
@@ -77,6 +79,10 @@ object Deps {
     val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jre7:${Versions.kotlin}"
 
     // Libs
+    val realm = "io.realm:realm-gradle-plugin:${Versions.realm}"
+
+    val use_cases = "com.github.Zeyad-37:Usecases:1.1.0"
+
     // - Support
     val design_support = "com.android.support:design:${Versions.support_lib}"
     val appcompat_v7 = "com.android.support:appcompat-v7:${Versions.support_lib}"
@@ -88,6 +94,7 @@ object Deps {
             .contraint_layout}"
     val arch_life_cycle = "android.arch.lifecycle:extensions:${Versions.archComp}"
     val arch_reactive_stream = "android.arch.lifecycle:reactivestreams:${Versions.archComp}"
+    val arch_rxjava_paging = "android.arch.paging:rxjava2:1.0.0-alpha1"
 
     // - Network
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
