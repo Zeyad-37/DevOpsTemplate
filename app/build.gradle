@@ -1,32 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'jacoco-android'
-apply plugin: 'com.uber.infer.android'
-apply plugin: "org.jmailen.kotlinter"
-apply plugin: "net.ltgt.errorprone"
-
-//apply from: "$project.rootDir/tools/script-git-version.gradle"
-apply from: "$project.rootDir/tools/script-check-style.gradle"
-apply from: "$project.rootDir/tools/script-findbugs.gradle"
-apply from: "$project.rootDir/tools/script-lint.gradle"
-apply from: "$project.rootDir/tools/script-pmd.gradle"
-apply from: "$project.rootDir/tools/script-java-code-coverage.gradle"
-apply from: "$project.rootDir/tools/script-java-doc.gradle"
-apply from: "$project.rootDir/tools/script-pitest.gradle"
-apply from: "$project.rootDir/tools/script-infer.gradle"
 apply from: "$project.rootDir/tools/script-detekt.gradle"
-apply from: "$project.rootDir/tools/script-dokka.gradle"
 
 android {
-    compileSdkVersion Versions.compile_sdk
-    buildToolsVersion Versions.buildTool
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId Versions.appId
-        minSdkVersion Versions.min_sdk
-        targetSdkVersion Versions.target_sdk
+        minSdkVersion 21
+        targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -35,13 +19,13 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword KEY_PASSWORD
             storePassword KEYSTORE_PASSWORD
-            storeFile file('../keystore/debug.keystore')
+//            storeFile file('../keystore/debug.keystore')
         }
         release {
             keyAlias 'androiddebugkey'
             keyPassword KEY_PASSWORD
             storePassword KEYSTORE_PASSWORD
-            storeFile file('../keystore/release.keystore')
+//            storeFile file('../keystore/release.keystore')
         }
     }
 
@@ -50,9 +34,7 @@ android {
     productFlavors {
         dev {
             signingConfig signingConfigs.debug
-//            versionCode gitVersionCodeTime
             versionCode 1
-//            versionName gitVersionName
             versionName "1.0.0"
             applicationId "com.dd.template.dev"
             dimension "dev"
@@ -60,9 +42,7 @@ android {
 
         prod {
             signingConfig signingConfigs.release
-            //            versionCode gitVersionCodeTime
             versionCode 1
-//            versionName gitVersionName
             versionName "1.0.0"
             applicationId "com.dd.template"
             dimension "prod"
@@ -106,32 +86,16 @@ android {
         }
     }
 
-    jacocoAndroidUnitTestReport {
-        excludes += ['**/AutoValue_*.*', '**/*JavascriptBridge.class']
-        csv.enabled false
-        html.enabled true
-        xml.enabled false
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-//    configurations.all{
-//        resolutionStrategy {
-//            eachDependency { DependencyResolveDetails details ->
-//                if (details.required.group == 'com.android.support') {
-//                    details.useVersion(supportLibrary)
-//                }
-//            }
-//        }
-//    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation Deps.kotlin
+    implementation Deps.ktx
 
     implementation Deps.design_support
     implementation Deps.appcompat_v7
@@ -143,15 +107,14 @@ dependencies {
 
     implementation Deps.rx_android
     implementation Deps.rx_java
-    //    def withoutRx = { exclude group: "io.reactivex.rxjava2" }
+
     implementation Deps.rx_binding_core
     implementation Deps.rx_binding_app_compat
     implementation Deps.rx_binding_design
     implementation Deps.rx_binding_recycler_view
 
     implementation Deps.rx_redux
-    implementation "com.github.Zeyad-37:GenericRecyclerViewAdapter:1.8.0"
-//    implementation 'com.github.pwittchen:reactivenetwork-rx2:0.12.2'
+    implementation Deps.generic_recycler_review
     implementation Deps.glide
     implementation Deps.lottie
 

@@ -3,17 +3,17 @@
  */
 object Versions {
     // Gradle
-    val android_gradle_plugin = "3.0.1"
+    val android_gradle_plugin = "3.1.3"
 
     // Kotlin
-    val kotlin = "1.2.3"
+    val kotlin = "1.2.51"
     val ktx = "0.2"
 
     // SDK
     val min_sdk = 21
     val target_sdk = 27
     val compile_sdk = 27
-    val buildTool = "27.0.1"
+    val buildTool = "27.0.3"
 
     // App Version
     val version_code = 1
@@ -57,8 +57,8 @@ object Versions {
     val restMock = "0.2.2"
     val junit = "4.12"
 
-    val genericRecyclerViewAdapter = "1.8.0"
-    val appId = "com.dd.template"
+    val genericRecyclerViewAdapter = "1.9.0"
+    val appId = "com.privalia.test"
 }
 
 object Deps {
