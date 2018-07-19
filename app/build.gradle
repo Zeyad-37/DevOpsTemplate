@@ -113,7 +113,7 @@ dependencies {
     implementation Deps.rx_binding_design
     implementation Deps.rx_binding_recycler_view
 
-    implementation Deps.rx_redux
+    implementation Deps.use_cases
     implementation Deps.generic_recycler_review
     implementation Deps.glide
     implementation Deps.lottie

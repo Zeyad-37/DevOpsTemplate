@@ -106,6 +106,7 @@ object Deps {
     val rx_binding_recycler_view = "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:${Versions
             .rxbinding}"
     val rx_redux = "com.github.Zeyad-37:RxRedux:${Versions.rxredux}"
+    val use_cases = "com.github.Zeyad-37:Usecases:1.1.0"
 
     // - Injection
     val koin_core = "org.koin:koin-core:${Versions.koin_version}"
