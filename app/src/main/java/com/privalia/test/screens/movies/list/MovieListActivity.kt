@@ -4,9 +4,7 @@ import android.app.ActivityOptions
 import android.app.SearchManager
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.util.Log
@@ -18,6 +16,7 @@ import android.view.ViewGroup
 import com.andrognito.flashbar.Flashbar
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView
+import com.privalia.test.FIRED
 import com.privalia.test.R
 import com.privalia.test.hasLollipop
 import com.privalia.test.mvi.BaseEvent
@@ -29,7 +28,7 @@ import com.privalia.test.screens.movies.detail.MovieDetailFragment
 import com.privalia.test.screens.movies.entities.Movie
 import com.privalia.test.screens.movies.list.events.GetMoviesEvent
 import com.privalia.test.screens.movies.list.events.SearchMoviesEvent
-import com.privalia.test.showFlashBarMessage
+import com.privalia.test.showErrorFlashBar
 import com.zeyad.gadapter.GenericRecyclerViewAdapter
 import com.zeyad.usecases.api.DataServiceFactory
 import io.reactivex.Observable
@@ -58,28 +57,25 @@ class MovieListActivity : BaseActivity<MovieListState, MovieListVM>() {
      * device.
      */
     private var twoPane: Boolean = false
+    private var currentFragTag: String = ""
     private lateinit var moviesAdapter: GenericRecyclerViewAdapter
     private val postOnResumeEvents = PublishSubject.create<BaseEvent<*>>()
     private lateinit var eventObservable: Observable<BaseEvent<*>>
-    private val FIRED = "fired!"
+
 
     override fun errorMessageFactory(): ErrorMessageFactory {
         return object : ErrorMessageFactory {
-            override fun getErrorMessage(throwable: Throwable): String {
-                return throwable.localizedMessage
-            }
+            override fun getErrorMessage(throwable: Throwable) = throwable.localizedMessage
         }
     }
 
     override fun initialize() {
-        viewState = MovieListState(isTwoPane = twoPane)
+        viewState = EmptyState()
         eventObservable = Observable.empty()
         viewModel = ViewModelProviders.of(this,
                 ViewModelFactory(DataServiceFactory.getInstance()!!)).get(MovieListVM::class.java)
-        if (viewState.isEmpty()) {
-            eventObservable = Single.just<BaseEvent<*>>(GetMoviesEvent(0))
-                    .doOnSuccess { Log.d("GetPaginatedMoviesEvent", FIRED) }.toObservable()
-        }
+        eventObservable = Single.just<BaseEvent<*>>(GetMoviesEvent(0))
+                .doOnSuccess { Log.d("GetPaginatedMoviesEvent", FIRED) }.toObservable()
     }
 
     override fun setupUI(isNew: Boolean) {
@@ -90,24 +86,12 @@ class MovieListActivity : BaseActivity<MovieListState, MovieListVM>() {
         twoPane = findViewById<View>(R.id.movie_detail_container) != null
     }
 
-    override fun events(): Observable<BaseEvent<*>> {
-        return eventObservable.mergeWith(postOnResumeEvents())
-    }
+    override fun events(): Observable<BaseEvent<*>> = eventObservable.mergeWith(postOnResumeEvents())
 
-    private fun postOnResumeEvents(): Observable<BaseEvent<*>> {
-        return postOnResumeEvents
-    }
+    private fun postOnResumeEvents() = postOnResumeEvents
 
     override fun renderSuccessState(successState: MovieListState, event: String) {
-        val movies = successState.movies
-        val searchList = successState.searchList
-        if (searchList.isNotEmpty()) {
-            moviesAdapter.setDataList(searchList, DiffUtil.calculateDiff(MovieDiffCallBack(searchList,
-                    moviesAdapter.adapterData)))
-        } else if (movies.isNotEmpty()) {
-            moviesAdapter.setDataList(movies, DiffUtil.calculateDiff(MovieDiffCallBack(movies,
-                    moviesAdapter.dataList)))
-        }
+        moviesAdapter.setDataList(successState.movies, successState.callback)
     }
 
     override fun toggleViews(isLoading: Boolean, event: String) {
@@ -116,15 +100,14 @@ class MovieListActivity : BaseActivity<MovieListState, MovieListVM>() {
     }
 
     override fun showError(errorMessage: String, event: String) {
-        showErrorSnackBar(errorMessage, movie_list, Snackbar.LENGTH_LONG)
-        showFlashBarMessage("Review Confirmed!!")
-                .backgroundColorRes(R.color.green)
-                .primaryActionText("Continue")
+        showErrorFlashBar(errorMessage)
+                .backgroundColorRes(android.R.color.holo_red_dark)
+                .primaryActionText("Retry")
                 .primaryActionTextColor(R.color.white)
                 .primaryActionTapListener(object : Flashbar.OnActionTapListener {
                     override fun onActionTapped(bar: Flashbar) {
                         bar.dismiss()
-                        startActivity(PlaceListActivity.getCallingIntent(this@ReviewActivity))
+//                        postOnResumeEvents.onNext()
                     }
                 })
                 .show()
@@ -141,11 +124,9 @@ class MovieListActivity : BaseActivity<MovieListState, MovieListVM>() {
                     }
         }
         moviesAdapter.setAreItemsClickable(true)
-        moviesAdapter.setOnItemClickListener { position, itemInfo, holder ->
+        moviesAdapter.setOnItemClickListener { _, itemInfo, holder ->
             if (itemInfo.getData<Any>() is Movie) {
                 val movieModel = itemInfo.getData<Movie>()
-                val movieDetailState = MovieDetailState(twoPane)
-                        .build()
                 var pair: Pair<View, String>? = null
                 var secondPair: Pair<View, String>? = null
                 if (hasLollipop()) {
@@ -156,35 +137,35 @@ class MovieListActivity : BaseActivity<MovieListState, MovieListVM>() {
                     secondPair = Pair.create(textViewTitle, textViewTitle.transitionName)
                 }
                 if (twoPane) {
-                    if (viewState.currentFragTag.isNotBlank()) {
-                        removeFragment(viewState.currentFragTag)
+                    if (currentFragTag.isNotBlank()) {
+                        removeFragment(currentFragTag)
                     }
-                    val orderDetailFragment = MovieDetailFragment.newInstance(movieDetailState)
-                    viewState.currentFragTag = orderDetailFragment.javaClass.simpleName + movieModel.id
-                    addFragment(R.id.movie_detail_container, orderDetailFragment, viewState.currentFragTag,
+                    val orderDetailFragment = MovieDetailFragment.newInstance(movieModel)
+                    currentFragTag = orderDetailFragment.javaClass.simpleName + movieModel.id
+                    addFragment(R.id.movie_detail_container, orderDetailFragment, currentFragTag,
                             pair!!, secondPair!!)
                 } else {
                     if (hasLollipop()) {
                         val options = ActivityOptions.makeSceneTransitionAnimation(this, pair,
                                 secondPair)
-                        startActivity(MovieDetailActivity.getCallingIntent(this, movieDetailState),
+                        startActivity(MovieDetailActivity.getCallingIntent(this, movieModel),
                                 options.toBundle())
                     } else {
-                        startActivity(MovieDetailActivity.getCallingIntent(this, movieDetailState))
+                        startActivity(MovieDetailActivity.getCallingIntent(this, movieModel))
                     }
                 }
             }
         }
-
         movie_list.layoutManager = LinearLayoutManager(this)
         movie_list.adapter = moviesAdapter
         moviesAdapter.setAllowSelection(true)
         eventObservable = eventObservable.mergeWith(RxRecyclerView.scrollEvents(movie_list)
                 .map { recyclerViewScrollEvent ->
                     GetMoviesEvent(
-                            if (ScrollEventCalculator.isAtScrollEnd(recyclerViewScrollEvent))
+                            if (ScrollEventCalculator.isAtScrollEnd(recyclerViewScrollEvent)
+                                    && viewState !is MovieSearchState)
                                 viewState.page
-                            else 1)
+                            else -1)
                 }
                 .filter { it.getPayLoad() != -1 }
                 .throttleLast(200, TimeUnit.MILLISECONDS, IoScheduler())
@@ -202,11 +183,11 @@ class MovieListActivity : BaseActivity<MovieListState, MovieListVM>() {
             false
         }
         eventObservable = eventObservable.mergeWith(RxSearchView.queryTextChanges(searchView)
-                .filter { charSequence -> charSequence.toString().isNotEmpty() }
+                .filter { charSequence -> charSequence.toString().isNotBlank() }
                 .throttleLast(300, TimeUnit.MILLISECONDS, Schedulers.computation())
                 .debounce(400, TimeUnit.MILLISECONDS, Schedulers.computation())
-                .map { query -> SearchMoviesEvent(query.toString()) }
                 .distinctUntilChanged()
+                .switchMap { Observable.just(SearchMoviesEvent(it.toString(), viewState.movies)) } // Todo Check!!
                 .doOnEach { Log.d("SearchEvent", FIRED) })
         return super.onCreateOptionsMenu(menu)
     }

@@ -3,11 +3,11 @@ package com.privalia.test.screens.movies.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.privalia.test.R
 import com.privalia.test.mvi.view.BaseView.UI_MODEL
+import com.privalia.test.screens.movies.entities.Movie
 import com.privalia.test.screens.movies.list.MovieListActivity
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 
@@ -23,34 +23,13 @@ class MovieDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
         setSupportActionBar(detail_toolbar)
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-
-        // Show the Up button in the action bar.
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
         if (savedInstanceState == null) {
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
             val fragment = MovieDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putString(MovieDetailFragment.ARG_MOVIE_ID,
-                            intent.getStringExtra(MovieDetailFragment.ARG_MOVIE_ID))
+                    putString(UI_MODEL, intent.getStringExtra(UI_MODEL))
                 }
             }
-
             supportFragmentManager.beginTransaction()
                     .add(R.id.movie_detail_container, fragment)
                     .commit()
@@ -60,12 +39,6 @@ class MovieDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) =
             when (item.itemId) {
                 android.R.id.home -> {
-                    // This ID represents the Home or Up button. In the case of this
-                    // activity, the Up button is shown. For
-                    // more details, see the Navigation pattern on Android Design:
-                    //
-                    // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-
                     navigateUpTo(Intent(this, MovieListActivity::class.java))
                     true
                 }
@@ -73,13 +46,10 @@ class MovieDetailActivity : AppCompatActivity() {
             }
 
     companion object {
-
-        fun getCallingIntent(context: Context, userDetailModel: MovieDetailState): Intent {
+        fun getCallingIntent(context: Context, movieDetailModel: Movie): Intent {
             return Intent(context, MovieDetailActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .putExtra(UI_MODEL, userDetailModel)
+                    .putExtra(UI_MODEL, movieDetailModel)
         }
     }
 }
-
-

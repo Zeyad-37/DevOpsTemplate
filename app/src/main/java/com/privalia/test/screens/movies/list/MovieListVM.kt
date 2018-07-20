@@ -7,6 +7,7 @@ import com.privalia.test.mvi.BaseEvent
 import com.privalia.test.mvi.viewmodel.BaseViewModel
 import com.privalia.test.mvi.viewmodel.StateReducer
 import com.privalia.test.screens.movies.entities.Movie
+import com.privalia.test.screens.movies.entities.MovieListResponse
 import com.privalia.test.screens.movies.list.events.GetMoviesEvent
 import com.privalia.test.screens.movies.list.events.SearchMoviesEvent
 import com.zeyad.gadapter.ItemInfo
@@ -27,33 +28,95 @@ class MovieListVM(private var dataUseCase: IDataService) : BaseViewModel<MovieLi
         }
     }
 
-    override fun stateReducer(): StateReducer<MovieListState> {
+    override fun stateReducer(): StateReducer<MovieListState> { // Todo Handle switching between search and get
         return object : StateReducer<MovieListState> {
-            override fun reduce(newResult: Any?, event: String?, currentStateBundle: MovieListState?): MovieListState {
-                val currentItemInfo = currentStateBundle?.movies.toMutableList()
-                val pair = Flowable.fromIterable<ResultsItem>((newResult as PlaceList).results!!)
-                        .map { resultsItem -> ItemInfo(resultsItem, R.layout.movie_list_content) }
-                        .toList()
-                        .toFlowable()
-                        .scan<Pair<MutableList<ItemInfo>, DiffUtil.DiffResult>>(Pair(currentItemInfo,
-                                DiffUtil.calculateDiff(MovieDiffCallBack(mutableListOf(),
-                                        mutableListOf()))))
-                        { pair1, next ->
-                            Pair(next, DiffUtil.calculateDiff(MovieDiffCallBack(pair1.first, next)))
+            override fun reduce(newResult: Any, event: String, currentStateBundle: MovieListState): MovieListState {
+                val currentItemInfo = currentStateBundle.movies.toMutableList()
+                return when (currentStateBundle) {
+                    is EmptyState -> when (newResult) {
+                        is MovieListResponse -> {
+                            val pair = Flowable.fromIterable<Movie>((newResult).results)
+                                    .map { resultsItem -> ItemInfo(resultsItem, R.layout.movie_list_content) }
+                                    .toList()
+                                    .toFlowable()
+                                    .scan<Pair<MutableList<ItemInfo>, DiffUtil.DiffResult>>(Pair(currentItemInfo,
+                                            DiffUtil.calculateDiff(MovieDiffCallBack(mutableListOf(),
+                                                    mutableListOf()))))
+                                    { pair1, next ->
+                                        Pair(next, DiffUtil.calculateDiff(MovieDiffCallBack(pair1.first, next)))
+                                    }
+                                    .skip(1)
+                                    .blockingFirst()
+                            GetMovieState(gMovies = pair.first, gCallback = pair.second,
+                                    gPage = currentStateBundle.page + 1)
                         }
-                        .skip(1)
-                        .blockingFirst()
-                return MovieListState(pair.first, pair.second, isTwoPane = currentStateBundle?.isTwoPane!!)
+                        else -> throw IllegalStateException("Can not reduce EmptyState with this" +
+                                " result: $newResult!")
+                    }
+                    is GetMovieState -> when (newResult) {
+                        is MovieListResponse -> {
+                            val pair = Flowable.fromIterable<Movie>((newResult).results)
+                                    .map { resultsItem -> ItemInfo(resultsItem, R.layout.movie_list_content) }
+                                    .toList()
+                                    .toFlowable()
+                                    .scan<Pair<MutableList<ItemInfo>, DiffUtil.DiffResult>>(Pair(currentItemInfo,
+                                            DiffUtil.calculateDiff(MovieDiffCallBack(mutableListOf(),
+                                                    mutableListOf()))))
+                                    { pair1, next ->
+                                        Pair(next, DiffUtil.calculateDiff(MovieDiffCallBack(pair1.first, next)))
+                                    }
+                                    .skip(1)
+                                    .blockingFirst()
+                            GetMovieState(gMovies = pair.first, gCallback = pair.second,
+                                    gPage = currentStateBundle.page + 1)
+                        }
+                        is List<*> -> {
+                            val pair = Flowable.just((newResult as List<ItemInfo>).toMutableList())
+                                    .scan<Pair<MutableList<ItemInfo>, DiffUtil.DiffResult>>(Pair(currentItemInfo,
+                                            DiffUtil.calculateDiff(MovieDiffCallBack(mutableListOf(),
+                                                    mutableListOf()))))
+                                    { pair1, next ->
+                                        Pair(next, DiffUtil.calculateDiff(MovieDiffCallBack(pair1.first, next)))
+                                    }
+                                    .skip(1)
+                                    .blockingFirst()
+                            MovieSearchState(sMovies = pair.first, sCallback = pair.second,
+                                    sPage = currentStateBundle.page + 1)
+                        }
+                        else -> throw IllegalStateException("Can not reduce GetMovieState with this" +
+                                " result: $newResult!")
+                    }
+                    is MovieSearchState -> when (newResult) {
+                        is MovieListResponse -> {
+                            val pair = Flowable.fromIterable<Movie>((newResult).results)
+                                    .map { resultsItem -> ItemInfo(resultsItem, R.layout.movie_list_content) }
+                                    .toList()
+                                    .toFlowable()
+                                    .scan<Pair<MutableList<ItemInfo>, DiffUtil.DiffResult>>(Pair(currentItemInfo,
+                                            DiffUtil.calculateDiff(MovieDiffCallBack(mutableListOf(),
+                                                    mutableListOf()))))
+                                    { pair1, next ->
+                                        Pair(next, DiffUtil.calculateDiff(MovieDiffCallBack(pair1.first, next)))
+                                    }
+                                    .skip(1)
+                                    .blockingFirst()
+                            GetMovieState(gMovies = pair.first, gCallback = pair.second,
+                                    gPage = currentStateBundle.page + 1)
+                        }
+                        else -> throw IllegalStateException("Can not reduce MovieSearchState with this" +
+                                " result: $newResult!")
+                    }
+                }
             }
         }
     }
 
-    private fun getMovies(currentPage: Int): Flowable<List<Movie>> {
-        return dataUseCase.getList(GetRequest.Builder(Movie::class.java, false)
-                .url(String.format(MOVIES, currentPage + 1)).build())
+    private fun getMovies(currentPage: Int): Flowable<MovieListResponse> {
+        return dataUseCase.getObject(GetRequest.Builder(Movie::class.java, false)
+                .url(MOVIES + currentPage + 1).build())
     }
 
-    private fun search(query: String, movies: List<Movie>): Flowable<List<Movie>> {
-        return Flowable.just(movies.filter { query == "" })
+    private fun search(pair: Pair<String, List<ItemInfo>>): Flowable<List<ItemInfo>> {
+        return Flowable.just(pair.second.filter { pair.first == "" })
     }
 }

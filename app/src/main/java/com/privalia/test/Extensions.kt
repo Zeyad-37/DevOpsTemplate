@@ -21,10 +21,11 @@ fun Any.hasM(): Boolean {
 
 fun <T> Publisher<T>.toLiveData() = LiveDataReactiveStreams.fromPublisher(this) as LiveData<T>
 
-fun AppCompatActivity.showFlashBarMessage(message: String, duration: Long = 500): Flashbar.Builder {
+fun AppCompatActivity.showErrorFlashBar(message: String, duration: Long = 500): Flashbar.Builder {
     return Flashbar.Builder(this)
             .gravity(Flashbar.Gravity.BOTTOM)
             .duration(duration)
+            .title("Error!")
             .message(message)
             .showOverlay()
             .enterAnimation(FlashAnim.with(this)
@@ -46,3 +47,5 @@ fun AppCompatActivity.showFlashBarMessage(message: String, duration: Long = 500)
                     .accelerate())
             .enableSwipeToDismiss()
 }
+
+fun String.getYear() = this.substringBefore("-")

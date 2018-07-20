@@ -6,8 +6,8 @@
     android:name="com.privalia.test.screens.MovieListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="@dimen/eight_dp"
+    android:layout_marginRight="@dimen/eight_dp"
     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
     tools:context="com.privalia.test.screens.movies.list.MovieListActivity"
     tools:listitem="@layout/movie_list_content" />

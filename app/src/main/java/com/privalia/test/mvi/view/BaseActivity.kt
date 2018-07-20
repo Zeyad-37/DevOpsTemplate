@@ -5,9 +5,9 @@ import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.AppCompatDelegate
 import com.privalia.test.mvi.BaseEvent
-import com.privalia.test.mvi.toLiveData
 import com.privalia.test.mvi.view.BaseView.UI_MODEL
 import com.privalia.test.mvi.viewmodel.BaseViewModel
+import com.privalia.test.toLiveData
 import io.reactivex.Observable
 
 /**
